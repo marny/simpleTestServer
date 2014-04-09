@@ -1,0 +1,21 @@
+extends layout
+
+block content
+    h1= title
+    form(role="form", class="form-horizontal" method="post",action="#{action}")
+        .form-group
+          label(for="inputServerId") Server Id
+          input#inputServerId.form-control(type="text", placeholder="serverid", name="serverid", value="#{server.serverid}")
+        .form-group
+          label(for="inputServerType") Server Type 
+          select#inputServerType.form-control(name="serverType")
+            - var values = ['ok', 'notOk', 'delay']
+              each val in values
+                option(value="#{val}" selected=(val==server.type))= val
+        .form-group
+          label(for="inputDescription") Description
+          input#inputDescription.form-control(type="text", name="description", placeholder="description" value="#{server.description}") 
+        .form-group
+           label(for="inputSeverResponse") Response
+           textarea#inputSeverResponse.form-control(rows="20", placeholder="response", name="response")!= server.response
+        button#btnSubmit(type="submit" class="btn btn-primary") Save

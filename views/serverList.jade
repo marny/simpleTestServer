@@ -1,0 +1,29 @@
+extends layout
+
+block content
+    h1.
+        Server List    
+    table(class="table table-striped")
+      thead
+        tr
+          th #
+          th Server id
+          th Type
+          th Description  
+          th
+      tbody   
+        each server, i in serverList
+          tr
+            td #{i+1}
+            td
+              b
+                a(href="/editserver/#{server._id}")= server.serverid    
+                  &nbsp;&nbsp;
+                  span(class="glyphicon glyphicon-edit")
+            td    
+              = server.type
+            td
+              = server.description 
+            td 
+              a(class="btn btn-primary btn-sm" href="/deleteserver/#{server._id}" role="button") Delete   
+                span(class="glyphicon glyphicon-trash")

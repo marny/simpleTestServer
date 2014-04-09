@@ -1,0 +1,22 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/bootstrap/css/bootstrap.css')
+    script(type='text/javascript', src='/javascripts/jquery-2.1.0.js')
+    script(type='text/javascript', src='/bootstrap/js/bootstrap.js')
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible' content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+  body
+    #menu
+      ul(class="nav nav-pills") 
+        li
+          a(href='/serverlist' class='button') List servers  
+            span(class="glyphicon glyphicon-th-list")
+        li  
+          a(href='/newserver' class='button') Add server  
+            span(class="glyphicon glyphicon-plus")
+    #container
+      block content
