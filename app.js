@@ -3,22 +3,26 @@
  * Module dependencies.
  */
 
+
 var express = require('express');
 var routes = require('./routes');
 var serverResponse = require('./routes/serverResponse');
-var http = require('http');
 var path = require('path');
 var mongo = require('mongodb');
 var monk = require('monk');
 var db = monk('localhost:27017/simpleTestServer');
-var fs = require('fs');
+var io = require('socket.io')
 var app = express();
+var http = require('http')
+
+//var events = require('./routes/socket');
+
 
 // all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-app.use(express.favicon());
+app.use(express.favicon(path.join(__dirname, '/public/images/favicon.ico')));
 app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
@@ -51,7 +55,23 @@ app.post('/delay/:id/:delay?', serverResponse.delay(db));
 
 
 
-http.createServer(app).listen(app.get('port'), function(){
+var server = http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
 
+iosocket = io.listen(server, {'log level': 1});
+
+stop = false;
+iosocket.sockets.on('connection', function (socket) {
+    socket.on('stop', function (data) {
+    	console.log('stop');
+    	stop = true;
+    });
+    socket.on('play', function (data) {
+    	console.log('play');
+    	stop = false;
+    });
+    socket.on('disconnect', function () {
+        console.log('godbye')
+    });
+});

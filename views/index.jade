@@ -1,5 +1,50 @@
 extends layout
 
 block content
-	h1= title
-	p Welcome to #{title}
+	script(type='text/javascript', src='/javascripts/chart.js')
+	script(type='text/javascript').
+		var socket = io.connect('http://localhost');
+		
+		socket.on('graph', function (data) {
+			var tData = chart.options.data;
+			for (var i = 0; i < tData.length; i++) {
+				var aData = tData[i];
+				if (data.type.toUpperCase() === aData.name.toUpperCase()) {
+					for (var j = 0; j < aData.dataPoints.length; j++) {
+						var point = aData.dataPoints[j];
+						if (data.id.toUpperCase() === point.label.toUpperCase()) {
+							point.y = point.y + 1;
+						}
+					}
+				}
+				
+			}
+			chart.render();
+		});
+		
+		socket.on('log', function (data) {
+			var colorClass = "bg-success";
+			if (!data.status) {
+				colorClass = "bg-danger";
+			}
+			$("#activityLog").append('<p class="'+colorClass+'"><b>' + data.type + '</b> ' + data.id + '  ip ' + data.caller + '</p>');
+		});
+
+	.page-header
+		h1= title           		
+	.row.dashboard-header
+		.col-lg-6
+			h3 Usage  
+				small graph
+		.col-lg-6
+			h3 Activity log	
+				small events              				
+				button#play.btn.btn-default.btn-sm.hide(onclick='play()') Play
+					span(class="glyphicon glyphicon-play")
+				button#stop.btn.btn-default.btn-sm(onclick='stop()') Stop
+					span(class="glyphicon glyphicon-stop")
+	.row
+		#console.col-lg-6
+			#chartContainer(width="400", height="400")
+		.col-lg-6
+			#activityLog

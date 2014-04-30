@@ -6,7 +6,7 @@ exports.index = function(req, res){
 exports.serverList = function(db) {
     return function(req, res) {
         var collection = db.get('servers');
-        collection.find({}, {}, function(e, docs){
+        collection.find({}, {sort: {serverid: 1, servertype: 1}}, function(e, docs){
             res.render('serverList', {
                 serverList : docs, title: "List servers"
             });
@@ -15,7 +15,6 @@ exports.serverList = function(db) {
 };
 
 exports.newServer = function(req, res){
-  //res.render('newServer', { title: 'Add New Server', server: {}});
   res.render('editServer', { title: 'Add New Server', 
   							server: {respones:"", 
 										serverid:"", 
@@ -45,13 +44,13 @@ exports.editServer = function(db) {
 
 exports.updateServer = function(db) {
     return function(req, res) {
-
-    	  // Get our form values. These rely on the "name" attributes
         var serverId = req.body.serverid;
         var serverResponse = req.body.response;
         var serverType = req.body.serverType;
         var description = req.body.description;
-    	if (serverId == null || serverType == null) {res.status(404).end("missing id or server type");} 
+    	if (serverId == null || serverType == null) {
+    		res.status(404).end("missing id or server type");
+    	} 
     	var collection = db.get("servers");
     	collection.findAndModify({query: {serverid: serverId, type: serverType},
     							update: {"response" : serverResponse,
@@ -77,16 +76,14 @@ exports.deleteServer = function(db) {
 
 exports.addServer = function(db) {
     return function(req, res) {
-
-        // Get our form values. These rely on the "name" attributes
         var serverId = req.body.serverid;
         var serverResponse = req.body.response;
         var serverType = req.body.serverType;
         var description = req.body.description;
 
-        if (serverId == null || serverType == null) {res.status(404).end("missing id or server type");} 
-        else {
-	        // Set our collection
+        if (serverId == null || serverType == null) {
+        	res.status(404).end("missing id or server type");
+        } else {
 	        var collection = db.get('servers')
 	        collection.findOne({serverid: serverId, type: serverType}).on('success', function(doc) {
 	        	if (doc != null) res.status(404).end("id and type exist");
@@ -101,7 +98,6 @@ exports.addServer = function(db) {
 			                res.send("There was a problem adding the information to the database.");
 			            }
 			            else {
-			                // If it worked, set the header so the address bar doesn't still say /adduser
 			                res.location("serverlist");
 			                res.redirect("serverlist");
 			            }
