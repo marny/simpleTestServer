@@ -13,7 +13,7 @@ exports.ok = function(db){
 exports.notOk = function(db){
   return function(req, res) {
   var id = req.params.id  || req.body.id;
-  readDb(id, "not ok", res, db, req);
+  readDb(id, "notOk", res, db, req);
 };
 };
 
@@ -45,8 +45,8 @@ function readDb(serverId, type, res, db, req) {
 
 function callback(type, serverId, ip, status) {
     if (!stop) {
-      iosocket.sockets.emit("log", {'type': type, 'id': serverId, 'caller': ip, 'status': status})
-      iosocket.sockets.emit("graph", {'type': type, 'id': serverId, 'caller': ip, 'status': status})
+      iosocket.sockets.emit("log", {'type': type, 'id': serverId, 'caller': ip, 'status': status, 'action': 'request'});
+      iosocket.sockets.emit("graph", {'type': type, 'id': serverId, 'caller': ip, 'status': status, 'action': 'request'});
     }
 }
 

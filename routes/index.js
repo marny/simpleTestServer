@@ -10,6 +10,7 @@ exports.serverList = function(db) {
             res.render('serverList', {
                 serverList : docs, title: "List servers"
             });
+            iosocket.sockets.emit("log", {'type': 'all', 'id': 'servers', 'caller': req.ip, 'status': true, 'action': 'list'});
         });
     };
 };
@@ -57,6 +58,7 @@ exports.updateServer = function(db) {
     									 "serverid" : serverId,
     									 "type" : serverType,
             							"description" : description}});
+    	iosocket.sockets.emit("log", {'type': serverType, 'id': serverId, 'caller': req.ip, 'status': true, 'action': 'updated'});
         res.location("serverlist");
         res.redirect("serverlist");
 
@@ -69,6 +71,7 @@ exports.deleteServer = function(db) {
 		var serverId = req.params.id;
 		var collection = db.get("servers");
 		collection.remove({_id: serverId});
+		iosocket.sockets.emit("log", {'type': 'server', 'id': serverId, 'caller': req.ip, 'status': true, 'action': 'deleted'});
         res.location("serverlist");
         res.redirect("serverlist");
 	};
@@ -98,6 +101,7 @@ exports.addServer = function(db) {
 			                res.send("There was a problem adding the information to the database.");
 			            }
 			            else {
+			            	iosocket.sockets.emit("log", {'type': serverType, 'id': serverId, 'caller': req.ip, 'status': true, "action": "created"});
 			                res.location("serverlist");
 			                res.redirect("serverlist");
 			            }

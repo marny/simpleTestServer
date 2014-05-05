@@ -64,11 +64,13 @@ iosocket = io.listen(server, {'log level': 1});
 stop = false;
 iosocket.sockets.on('connection', function (socket) {
     socket.on('stop', function (data) {
-    	console.log('stop');
+    	console.log('stopped');
+    	socket.broadcast.emit('stopped');
     	stop = true;
     });
     socket.on('play', function (data) {
-    	console.log('play');
+    	console.log('played');
+    	socket.broadcast.emit('played');
     	stop = false;
     });
     socket.on('disconnect', function () {

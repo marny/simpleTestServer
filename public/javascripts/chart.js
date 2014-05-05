@@ -20,7 +20,7 @@
 	window.onload = function () {
 		chart = new CanvasJS.Chart("chartContainer", {            
 			title:{
-				text: "Request served"              
+				text: "Requests processed"              
 			},
 			toolTip: {
 		        shared: true,
@@ -63,4 +63,20 @@ function toolTip(e) {
 	var header = "<span style='color:DodgerBlue;'><strong>"+ (e.entries[0].dataPoint.label) + "</strong></span><br/>";
 	var totalElem = "<span style='color:Tomato'>Total: </span><strong>" + total + "</strong> st<br/>";		          
 	return header.concat(str).concat(totalElem);
+}
+
+function updateChart(data) {
+	var tData = chart.options.data;
+	for (var i = 0; i < tData.length; i++) {
+		var aData = tData[i];
+		if (data.type.toUpperCase() === aData.name.toUpperCase()) {
+			for (var j = 0; j < aData.dataPoints.length; j++) {
+				var point = aData.dataPoints[j];
+				if (data.id.toUpperCase() === point.label.toUpperCase()) {
+					point.y = point.y + 1;
+				}
+			}
+		}
+		
+	}
 }
