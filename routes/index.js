@@ -77,6 +77,10 @@ exports.deleteServer = function(db) {
 	};
 };
 
+exports.info = function(req, res){
+  res.render('info', { title: 'Current POST:s' });
+};
+
 exports.addServer = function(db) {
     return function(req, res) {
         var serverId = req.body.serverid;

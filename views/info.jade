@@ -1,0 +1,42 @@
+extends layout
+
+block content 
+	script(type='text/javascript').
+		function showDetailedInfo(id) {
+			$("#"+id).toggle();
+		}
+		var socket = io.connect('http://localhost');
+		
+		socket.on('info', function (data) {
+			var uniqid = "id" + Date.now();
+			var currentdate = new Date(); 
+			var datetimeStr = "</br>Request: " + currentdate.toISOString() + ', from  = ' + data.ip;
+			
+			var requestDiv = $("#requestLog");
+			requestDiv.append('<a href="javascript:showDetailedInfo(\''+uniqid+'\');">' + datetimeStr + '</a>');
+			
+			var infoDiv = $("#infoLog");
+			infoDiv.append('<div id="' + uniqid + '" style="display:none">');
+			var requestDiv = $("#"+uniqid);
+			for (var prop in data.body) {				
+				requestDiv.append('</br>' + prop + '=' + data.body[prop]);
+			}	
+			requestDiv.append('</br>' + data.contentType);
+			requestDiv.append('</br>' + data.userAgent);
+			requestDiv.append('</br>' + data.origin);
+			requestDiv.append('</br>' + data.accept);
+			requestDiv.append('</br>' + data.header);
+			
+		});
+		
+	.page-header
+		h1= title 
+	
+	.row.dashboard-header
+		.col-lg-6
+			h3 Requests 
+		.col-lg-6
+			h3 Detailed info
+	.row
+		#requestLog.col-lg-6
+		#infoLog.col-lg-6

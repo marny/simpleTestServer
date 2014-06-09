@@ -44,15 +44,18 @@ app.post('/addserver', routes.addServer(db));
 app.get('/editserver/:id', routes.editServer(db));
 app.post('/updateserver', routes.updateServer(db));
 app.get('/deleteserver/:id', routes.deleteServer(db))
-//
+app.get('/info', routes.info);
+
+//GET
 app.get('/ok/:id', serverResponse.ok(db));
 app.get('/notok/:id', serverResponse.notOk(db));
 app.get('/delay/:id/:delay?', serverResponse.delay(db));
-//
+
+//POSt
 app.post('/ok/:id', serverResponse.ok(db));
 app.post('/notok/:id', serverResponse.notOk(db));
 app.post('/delay/:id/:delay?', serverResponse.delay(db));
-
+app.post('/info', serverResponse.info);
 
 
 var server = http.createServer(app).listen(app.get('port'), function(){

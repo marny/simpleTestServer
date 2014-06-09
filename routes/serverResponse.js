@@ -13,6 +13,7 @@ exports.ok = function(db){
 exports.notOk = function(db){
   return function(req, res) {
   var id = req.params.id  || req.body.id;
+  console.log(req.body);
   readDb(id, "notOk", res, db, req);
 };
 };
@@ -33,11 +34,11 @@ function readDb(serverId, type, res, db, req) {
   var collection = db.get('servers');
   collection.findOne({serverid: serverId, type: type}).on('success', function(doc) {
     if (doc != null) {
-      res.send(doc.response); 
-      callback(type, serverId, req.ip, true);    
+      callback(type, serverId, req.ip, true);  
+      res.send(doc.response);
     } else {
       callback(type, serverId, req.ip, false);
-      res.send(404, "id and type not found");      
+      res.send(404, "id and type not found");       
     }
     
   });
@@ -50,3 +51,17 @@ function callback(type, serverId, ip, status) {
     }
 }
 
+
+exports.info = function(req, res){
+  console.log(req.headers);
+  console.log(req.body);  
+  iosocket.sockets.emit("info", {'body': req.body, 
+                                  'header': req.header, 
+                                  'ip': req.ip, 
+                                  'contentType': req.get('Content-type'),
+                                  'userAgent' : req.get('User-Agent'),
+                                  'origin' : req.get('Origin'),
+                                  'accept' : req.get('Accept')
+                                });
+  res.send("OK");
+};
